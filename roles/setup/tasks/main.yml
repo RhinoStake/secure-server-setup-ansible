@@ -1,0 +1,20 @@
+---
+- name: Update machine
+  import_tasks: update_machine.yml
+
+- name: Create users
+  include_tasks: create_users.yml
+
+- name: Configure Machine
+  import_tasks: configure_machine.yml
+
+- name: Install essentials
+  import_tasks: install_essentials.yml
+
+- name: Install Cosmos Dependencies
+  import_tasks: install_cosmos_dependencies.yml
+  when: cosmovisor|default(false)|bool == true
+
+#- name: Install promtail
+#  import_tasks: install_promtail.yml
+#  when: promtail|default(false)|bool == true

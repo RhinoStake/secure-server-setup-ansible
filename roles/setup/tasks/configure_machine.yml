@@ -1,8 +1,27 @@
 ---
-- name: change hostname
-  hostname:
+# Hostname
+- name: Change hostname
+  ansible.builtin.hostname:
     name: '{{ hostname }}'
+    use: debian
 
-- name: Update Timezone to my time
-  shell: 'timedatectl set-timezone America/Puerto_Rico'
-  changed_when: false
+# Modify Hosts
+- name: Update hosts file
+  ansible.builtin.template:
+    src: etc_hosts.j2
+    dest: '/etc/hosts'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+
+# Update limits
+- name: Update limits
+  ansible.builtin.blockinfile:
+    path: /etc/security/limits.conf
+    insertbefore: "# End of file"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    block: |
+      rhino soft nofile 1048576
+      rhino hard nofile 1048576
+      rhino soft nproc 1048576
+      rhino hard nproc 1048576

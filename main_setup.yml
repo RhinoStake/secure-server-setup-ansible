@@ -2,5 +2,7 @@
 - hosts: all
   gather_facts: no
   become: true
+  vars_files:
+  - '{{ user_file }}'
   roles:
     - setup

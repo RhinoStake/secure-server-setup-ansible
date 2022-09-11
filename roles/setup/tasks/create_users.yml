@@ -1,25 +1,38 @@
 ---
 - name: Create users 
-  user:
-    name: "{{ item.name }}"
-    password: "{{ item.password }}"
+  ansible.builtin.user:
+    name: "{{ name }}"
+    password: "{{ password }}"
     state: present
     shell: /bin/bash
 
-- name: Set authorized keys
-  authorized_key:
-    user: "{{ item.name }}"
-    key: "{{ item.ssh_pubkey }}"
+- name: Set authorized key 1
+  ansible.builtin.authorized_key:
+    user: "{{ name }}"
+    key: "{{ ssh_pubkey1 }}"
+
+- name: Set authorized key 2
+  ansible.builtin.authorized_key:
+    user: "{{ name }}"
+    key: "{{ ssh_pubkey2 }}"
 
 - name: Allow sudo for administrator
-  copy:
-    content: '{{ item.name }} ALL=(ALL:ALL) NOPASSWD: ALL'
-    dest: '/etc/sudoers.d/{{ item.name }}'
+  ansible.builtin.copy:
+    content: '{{ name }} ALL=(ALL:ALL) NOPASSWD: ALL'
+    dest: '/etc/sudoers.d/{{ name }}'
 
 - name: Create alias file
-  template:
+  ansible.builtin.template:
     src: bash_aliases.j2
-    dest: '/home/{{ item.name }}/.bash_aliases'
-    owner: '{{ item.name }}'
-    group: '{{ item.name }}'
+    dest: '/home/{{ name }}/.bash_aliases'
+    owner: '{{ name }}'
+    group: '{{ name }}'
+    mode: '0644'
+
+- name: Create .screenrc
+  ansible.builtin.template:
+    src: screenrc.j2
+    dest: '/home/{{ name }}/.screenrc'
+    owner: '{{ name }}'
+    group: '{{ name }}'
     mode: '0644'

@@ -1,17 +1,54 @@
 ---
 - name: Install essentials
-  apt:
+  ansible.builtin.apt:
     name:
-      - net-tools
-      - ncdu
-      - vnstat
-      - tree
-      - htop
-      - zip
-      - git
       - ufw
-      - bash-completion
+      - chrony
+      - htop
+      - screen
+      - git
+      - build-essential
+      - wget
+      - curl
+      - fio
+      - vim
+      - jq
+      - tree
+      - bc
+      - prometheus-node-exporter
       - lz4
+      - aria2
+      - zip
+      - net-tools
+      - tuned
+      - tmux
+      - vlan
+      - nvme-cli
+      - bash-completion
       - lsof
     state: latest
     update_cache: true
+    cache_valid_time: 3600
+
+# Set timezone to UTC
+- name: Set timezone to UTC
+  community.general.timezone:
+    name: Etc/UTC
+
+# Check tuned profile
+- name: Check tuned profile
+  ansible.builtin.shell: 'tuned-adm profile | grep "Current active profile: throughput-performance"'
+  register: tuned_check
+  ignore_errors: true
+
+# Set tune profile
+- name: Set tuned server profile
+  ansible.builtin.command: tuned-adm profile throughput-performance
+  when: tuned_check is failed 
+
+# Add toml highlighter for vim
+- name: Add TOML vim plugin
+  ansible.builtin.git:
+    repo: https://github.com/cespare/vim-toml.git
+    dest: /home/{{ name }}/.vim/pack/plugins/start/vim-toml
+

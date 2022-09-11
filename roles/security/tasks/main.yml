@@ -1,110 +1,41 @@
 ---
 - name: Install ufw
-  apt:
+  ansible.builtin.apt:
     name: ufw
     state: present
     update_cache: yes
 
-- name: Install fail2ban
-  apt:
-    name: fail2ban
-    state: present
-    update_cache: yes
-
-- name: Restart fail2ban
-  service:
-    name: fail2ban
-    state: restarted
-  changed_when: false
-
-- name: Open ssh port
-  ufw:
-    rule: allow
-    port: "{{ ssh_port }}"
-    proto: tcp
-
-- name: Open tenderduty port
-  ufw:
-    rule: allow
-    from_ip: "{{ tenderduty_v1 }}"
-
-- name: Open tenderduty v2 port
-  ufw:
-    rule: allow
-    from_ip: "{{ tenderduty_v2 }}"
-
-- name: Open restake port
-  ufw:
-    rule: allow
-    from_ip: "{{ restake }}"
-
-- name: Deny port 22
-  ufw:
-    rule: deny
-    port: 22
-    proto: tcp
-
-- name: Disable port 22 on ssh config
-  lineinfile:
-    dest: '/etc/ssh/sshd_config'
-    regex: '^Port 22'
-    line: 'Port {{ ssh_port }}'
-    state: present
-    create: true
+- name: Open RHINO subnets
+  community.general.ufw:
+    rule: allow 
+    src: '{{ item }}'
+  loop:
+    - 10.0.0.0/8
+    - 192.168.0.0/16 
+    - 172.16.0.0/24
+    - 38.32.16.56/29
 
 - name: Disable root login over SSH
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: '/etc/ssh/sshd_config'
     regexp: '^PermitRootLogin'
     line: 'PermitRootLogin no'
     state: present
   when: disable_root|default(true)|bool == true
 
-- name: AllowUsers
-  lineinfile:
-    dest: '/etc/ssh/sshd_config'
-    regexp: '^AllowUsers'
-    line: 'AllowUsers schultzie rbatty deploy horcrux'
-    state: present
-    create: true
-
-- name: Allow Horcrux server
-  ufw:
-    rule: allow
-    from_ip: "{{ item }}"
-  with_items: 
-    - "{{ horcrux_servers }}"
-
 - name: Disable password login
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: '/etc/ssh/sshd_config'
     regexp: '^PasswordAuthentication'
     line: 'PasswordAuthentication no'
     state: present
 
 - name: Restart SSH
-  service:
+  ansible.builtin.service:
     name: ssh
     state: restarted
   changed_when: false
 
 - name: Enable firewall
-  ufw: 
+  community.general.ufw: 
     state: enabled
-
-- name: add a list of hosts to /etc/hosts
-  become: yes
-  lineinfile:
-    dest: /etc/hosts
-    regexp: "^{{ item['ip'] }}.*$"
-    line: "{{ item['ip'] }}\t\t{{ item['names'] | join(' ') }}"
-    state: present
-  with_items:
-  - ip: 127.0.0.1
-    names:
-    - localhost
-    - '{{ hostname }}'
-  - ip: ::1
-    names:
-    - localhost
-    - '{{ hostname }}'

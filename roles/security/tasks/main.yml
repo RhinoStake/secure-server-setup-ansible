@@ -21,7 +21,6 @@
     regexp: '^PermitRootLogin'
     line: 'PermitRootLogin no'
     state: present
-  when: disable_root|default(true)|bool == true
 
 - name: Disable password login
   ansible.builtin.lineinfile:

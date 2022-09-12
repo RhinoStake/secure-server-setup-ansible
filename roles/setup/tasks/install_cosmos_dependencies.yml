@@ -1,17 +1,11 @@
 - name: Download go
   ansible.builtin.get_url:
-    url: 'https://golang.org/dl/go{{ go_version }}.linux-arm64.tar.gz'
-    dest: '/tmp/go{{ go_version }}.linux-arm64.tar.gz'
+    url: 'https://golang.org/dl/go{{ go_version }}.linux-amd64.tar.gz'
+    dest: '/tmp/go{{ go_version }}.linux-amd64.tar.gz'
     mode: '0700'
 
 - name: Unarchive and install go
-  ansible.builtin.shell: "rm -rf /usr/local/go && tar -C /usr/local -xzf /tmp/go{{ go_version }}.linux-arm64.tar.gz"
-
-- name: Go get cosmovisor
-  command: 'go install github.com/cosmos/cosmos-sdk/cosmovisor/cmd/cosmovisor@{{ cosmovisor_version }}'
-  environment:
-    PATH: '/usr/local/go/bin'
-    GOPATH: '/home/{{ name }}/go'
+  ansible.builtin.shell: "rm -rf /usr/local/go && tar -C /usr/local -xzf /tmp/go{{ go_version }}.linux-amd64.tar.gz"
 
 - name: Change go folder permission
   file:
@@ -28,3 +22,9 @@
     owner: '{{ name }}'
     group: '{{ name }}'
     mode: '0600'
+
+- name: Go get cosmovisor
+  command: 'go install github.com/cosmos/cosmos-sdk/cosmovisor/cmd/cosmovisor@{{ cosmovisor_version }}'
+  environment:
+    PATH: '/usr/local/go/bin'
+    GOPATH: '/home/{{ name }}/go'

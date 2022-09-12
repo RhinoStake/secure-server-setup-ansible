@@ -4,3 +4,12 @@
     update_cache: true
     cache_valid_time: 3600
     upgrade: full
+
+# Ensure sudo is on
+- name: Install sudo
+  ansible.builtin.apt:
+    name:
+      - sudo
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600

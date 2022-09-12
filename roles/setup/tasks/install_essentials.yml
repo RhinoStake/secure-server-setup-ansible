@@ -37,13 +37,13 @@
 
 # Check tuned profile
 - name: Check tuned profile
-  ansible.builtin.shell: 'tuned-adm profile | grep "Current active profile: throughput-performance"'
+  ansible.builtin.shell: '/usr/sbin/tuned-adm profile | grep "Current active profile: throughput-performance"'
   register: tuned_check
   ignore_errors: true
 
 # Set tune profile
 - name: Set tuned server profile
-  ansible.builtin.command: tuned-adm profile throughput-performance
+  ansible.builtin.command: /usr/sbin/tuned-adm profile throughput-performance
   when: tuned_check is failed 
 
 # Add toml highlighter for vim

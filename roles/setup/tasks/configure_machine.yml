@@ -15,13 +15,13 @@
     mode: '0644'
 
 # Update limits
-- name: Update limits
+- name: Update limits for user
   ansible.builtin.blockinfile:
     path: /etc/security/limits.conf
     insertbefore: "# End of file"
     marker: "# {mark} ANSIBLE MANAGED BLOCK"
     block: |
-      rhino soft nofile 1048576
-      rhino hard nofile 1048576
-      rhino soft nproc 1048576
-      rhino hard nproc 1048576
+      {{ name }} soft nofile 1048576
+      {{ name }} hard nofile 1048576
+      {{ name }} soft nproc 1048576
+      {{ name }} hard nproc 1048576

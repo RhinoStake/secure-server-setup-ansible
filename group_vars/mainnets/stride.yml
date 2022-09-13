@@ -8,6 +8,7 @@ genesis: 'https://raw.githubusercontent.com/Stride-Labs/testnet/infra-test/poolp
 seeds: 'cb91a11588d66cfd9c01f99541df4978a08e0e39@seedv1.main.stridenet.co:26656'
 peers: ''
 custom_port_prefix: 122
+snap_rpc: 'https://stride-rpc.polkachu.com:443'
 
 # [Optional] Snapshot
 snapshot_hour: 8

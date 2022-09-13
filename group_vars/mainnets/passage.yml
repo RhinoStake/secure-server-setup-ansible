@@ -7,6 +7,7 @@ repo: https://github.com/envadiv/Passage3D
 genesis: 'https://raw.githubusercontent.com/envadiv/mainnet/main/passage-1/genesis.json'
 seeds: 'ade4d8bc8cbe014af6ebdf3cb7b1e9ad36f412c0@seeds.polkachu.com:56656'
 custom_port_prefix: 156
+snap_rpc: 'https://passage-rpc.polkachu.com:443'
 
 # [Optional] Snapshot
 snapshot_hour: 8

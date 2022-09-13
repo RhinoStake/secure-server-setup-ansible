@@ -19,8 +19,8 @@
     - name: Change repo folder permission
       ansible.builtin.file:
         path: '{{ user_dir }}/source/{{ network }}'
-        owner: '{{ name }}'
-        group: '{{ name }}'
+        owner: '{{ ansible_user }}'
+        group: '{{ ansible_user }}'
         recurse: true
         mode: '0755'
 

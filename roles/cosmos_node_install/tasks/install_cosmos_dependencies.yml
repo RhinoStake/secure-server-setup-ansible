@@ -12,21 +12,21 @@
 - name: copy .profile
   ansible.builtin.template:
     src: 'profile.j2'
-    dest: '/home/{{ name }}/.profile'
-    owner: '{{ name }}'
-    group: '{{ name }}'
+    dest: '{{ user_dir }}/.profile'
+    owner: '{{ ansible_user }}'
+    group: '{{ ansible_user }}'
     mode: '0600'
 
 - name: Go install cosmovisor
   ansible.builtin.shell: 'go install github.com/cosmos/cosmos-sdk/cosmovisor/cmd/cosmovisor@{{ cosmovisor_version }}'
   environment:
     PATH: '/usr/local/go/bin'
-    GOPATH: '/home/{{ name }}/go'
+    GOPATH: '{{ user_dir }}/go'
 
 - name: Change go folder permission
   ansible.builtin.file:
-    path: '/home/{{ name }}/go'
-    owner: '{{ name }}'
-    group: '{{ name }}'
+    path: '{{ user_dir }}/go'
+    owner: '{{ ansible_user }}'
+    group: '{{ ansible_user }}'
     recurse: true
     mode: '0755'

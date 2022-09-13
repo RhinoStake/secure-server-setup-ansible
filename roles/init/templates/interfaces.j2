@@ -1,0 +1,22 @@
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+auto ens192
+iface ens192 inet static
+        address {{ internal_ip }}
+        up /bin/ip route add 10.0.0.0/8 via 10.254.{{ internal_ip.split('.')[2] }}.1
+        up /bin/ip route add 192.168.0.0/16 via 10.254.{{ internal_ip.split('.')[2] }}.1
+
+auto ens224
+iface ens224 inet static
+        address {{ external_ip }}
+        gateway {{ external_ip.split('.')[0] }}.{{ external_ip.split('.')[1] }}.{{ external_ip.split('.')[2] }}.1
+        dns-nameservers 208.67.220.220 208.67.222.222
+        dns-search rhinostake.com

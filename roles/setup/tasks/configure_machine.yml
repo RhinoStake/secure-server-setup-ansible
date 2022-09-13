@@ -2,7 +2,7 @@
 # Hostname
 - name: Change hostname
   ansible.builtin.hostname:
-    name: '{{ hostname }}'
+    name: '{{ inventory_hostname }}'
     use: debian
 
 # Modify Hosts
@@ -21,7 +21,7 @@
     insertbefore: "# End of file"
     marker: "# {mark} ANSIBLE MANAGED BLOCK"
     block: |
-      {{ name }} soft nofile 1048576
-      {{ name }} hard nofile 1048576
-      {{ name }} soft nproc 1048576
-      {{ name }} hard nproc 1048576
+      {{ ansible_user }} soft nofile 1048576
+      {{ ansible_user }} hard nofile 1048576
+      {{ ansible_user }} soft nproc 1048576
+      {{ ansible_user }} hard nproc 1048576

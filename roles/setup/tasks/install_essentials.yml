@@ -50,5 +50,5 @@
 - name: Add TOML vim plugin
   ansible.builtin.git:
     repo: https://github.com/cespare/vim-toml.git
-    dest: /home/{{ name }}/.vim/pack/plugins/start/vim-toml
+    dest: /home/{{ ansible_user }}/.vim/pack/plugins/start/vim-toml
 

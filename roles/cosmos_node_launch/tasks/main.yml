@@ -47,10 +47,10 @@
     group: root
     mode: '0644'
 
-- name: Start cosmovisor service
-  become: true
-  ansible.builtin.systemd:
-    name: '{{ daemon }}'
-    state: stopped
-    daemon_reload: yes
-    enabled: yes
+# - name: Start cosmovisor service
+#   become: true
+#   ansible.builtin.systemd:
+#     name: '{{ daemon }}'
+#     state: stopped
+#     daemon_reload: yes
+#     enabled: yes

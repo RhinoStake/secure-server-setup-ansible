@@ -1,0 +1,7 @@
+---
+# To init a templated vsphere image for use
+- hosts: '{{ target }}'
+  gather_facts: false
+  become: true
+  roles:
+    - init

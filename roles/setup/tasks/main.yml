@@ -11,10 +11,6 @@
 - name: Install essentials
   import_tasks: install_essentials.yml
 
-- name: Install Cosmos Dependencies
-  import_tasks: install_cosmos_dependencies.yml
-  when: cosmovisor|default(false)|bool == true
-
 #- name: Install promtail
 #  import_tasks: install_promtail.yml
 #  when: promtail|default(false)|bool == true

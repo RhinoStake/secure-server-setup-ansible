@@ -1,9 +1,10 @@
 ---
-- hosts: '{{ target }}'
-  gather_facts: no
+- name: Main
+  hosts: '{{ target }}'
+  gather_facts: false
   become: true
   vars_files:
   - '{{ user_file }}'
   roles:
     - setup
-    - security
+    - secure

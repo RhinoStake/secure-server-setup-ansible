@@ -1,0 +1,48 @@
+---
+
+#Install Go & Cosmovisor
+- name: Install Cosmos Dependencies
+  import_tasks: install_cosmos_dependencies.yml
+
+# Install binary
+- name: Install from source
+  block:
+    - name: Clone node repo
+      ansible.builtin.git:
+        repo: '{{ repo }}'
+        dest: '{{ user_dir }}/source/{{ network }}'
+        version: '{{ node_version }}'
+        update: yes
+        force: yes
+        recursive: no
+
+    - name: Change repo folder permission
+      ansible.builtin.file:
+        path: '{{ user_dir }}/source/{{ network }}'
+        owner: '{{ name }}'
+        group: '{{ name }}'
+        recurse: true
+        mode: '0755'
+
+    - name: Install node
+      ansible.builtin.command: '{{ item }}'
+      args:
+        chdir: '{{ user_dir }}/source/{{ network }}'
+      with_items:
+        - 'make install'
+      environment:
+        PATH: '{{ path }}'
+        GOPATH: '{{ user_dir }}/go'
+  when: binary is undefined
+
+- name: Install from binary
+  include_tasks: binary_default.yml
+  when: binary is defined and binary_processing is not defined
+
+- name: Install from binary zipped
+  include_tasks: binary_zip.yml
+  when: binary is defined and binary_processing is defined and binary_processing == 'zip'
+
+- name: Install from binary tar gz
+  include_tasks: binary_targz.yml
+  when: binary is defined and binary_processing is defined and binary_processing == 'targz'

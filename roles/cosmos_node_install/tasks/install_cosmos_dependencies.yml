@@ -6,24 +6,25 @@
 
 - name: Unarchive and install go
   ansible.builtin.shell: "rm -rf /usr/local/go && tar -C /usr/local -xzf /tmp/{{ go_release }}"
+  become: true
 
 # Copy .profile with GO additions
 - name: copy .profile
-  template:
+  ansible.builtin.template:
     src: 'profile.j2'
     dest: '/home/{{ name }}/.profile'
     owner: '{{ name }}'
     group: '{{ name }}'
     mode: '0600'
 
-- name: Go get cosmovisor
-  command: 'go install github.com/cosmos/cosmos-sdk/cosmovisor/cmd/cosmovisor@{{ cosmovisor_version }}'
+- name: Go install cosmovisor
+  ansible.builtin.shell: 'go install github.com/cosmos/cosmos-sdk/cosmovisor/cmd/cosmovisor@{{ cosmovisor_version }}'
   environment:
     PATH: '/usr/local/go/bin'
     GOPATH: '/home/{{ name }}/go'
 
 - name: Change go folder permission
-  file:
+  ansible.builtin.file:
     path: '/home/{{ name }}/go'
     owner: '{{ name }}'
     group: '{{ name }}'

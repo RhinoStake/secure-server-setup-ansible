@@ -1,0 +1,12 @@
+- name: download genesis zip file
+  ansible.builtin.get_url:
+    url: '{{ genesis }}'
+    dest: '/tmp/genesis.zip'
+    mode: '0700'
+
+- name: unarchive genesis
+  ansible.builtin.unarchive:
+    src: '/tmp/genesis.zip'
+    remote_src: yes
+    dest: '{{ user_dir }}/{{ folder }}/config'
+    mode: '0644'

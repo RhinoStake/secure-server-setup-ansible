@@ -1,41 +1,48 @@
 ---
-- name: open p2p port
-  become: true
-  command: 'ufw allow {{ custom_port_prefix }}656/tcp'
-
-- name: Create folder
-  file:
+#
+## Assumes tenderseed is already installed on node
+#
+# Create tenderseed folder
+- name: Create folder for tenderseed files
+  ansible.builtin.file:
     state: directory
-    path: '{{ user_dir }}/{{ folder }}/config'
+    path: '{{ user_dir }}/tenderseed/{{ network }}/config'
 
-- name: copy config.toml
-  template:
+- name: Copy tenderseed config.toml
+  ansible.builtin.template:
     src: 'config.toml.j2'
-    dest: '{{ user_dir }}/{{ folder }}/config/config.toml'
+    dest: '{{ user_dir }}/tenderseed/{{ network }}/config/config.toml'
     owner: '{{ ansible_user }}'
     group: '{{ ansible_user }}'
     mode: '0644'
 
-- name: copy node_key.json
-  template:
+- name: Copy node_key.json
+  ansible.builtin.template:
     src: 'node_key.json.j2'
-    dest: '{{ user_dir }}/{{ folder }}/config/node_key.json'
+    dest: '{{ user_dir }}/tenderseed/{{ network }}/config/node_key.json'
     owner: '{{ ansible_user }}'
     group: '{{ ansible_user }}'
     mode: '0644'
 
-- name: copy tenderseed service file
+- name: Copy tenderseed service file
   become: true
-  template:
+  ansible.builtin.template:
     src: 'tenderseed.service.j2'
     dest: '/etc/systemd/system/tenderseed_{{ network }}.service'
     owner: root
     group: root
     mode: '0644'
 
-- name: start tenderseed service
+- name: Open network port
   become: true
-  systemd:
+  community.general.ufw:
+    rule: allow
+    proto: tcp
+    port: "{{ custom_port_prefix }}56"
+
+- name: Start tenderseed service
+  become: true
+  ansible.builtin.systemd:
     name: 'tenderseed_{{ network }}'
     state: restarted
     daemon_reload: yes

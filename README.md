@@ -68,4 +68,4 @@ By default, these `ufw` rules disable _all_ inbound access other than from speci
 
 From the configuration proposed for Cosmos nodes, for example, you will see heavily pruned nodes that will install the latest chain binary and be prepped to state-sync.
 
-Any questions, reach out to us. Contact information is available on our website, [https://rhinostake.com}(https://rhinostake.com)].
+Any questions, reach out to us. Contact information is available on our website, [https://rhinostake.com](https://rhinostake.com).

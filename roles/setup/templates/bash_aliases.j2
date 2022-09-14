@@ -1,3 +1,10 @@
-alias log="sudo journalctl -o cat -fu"
+#
+## Job Management
+#
+alias log="sudo journalctl -fu"
 alias restart="sudo systemctl restart"
 alias stop="sudo systemctl stop"
+#
+## Shell items
+#
+alias consensus="python3 /home/{{ ansible_user}}/source/consensus/consensus.py"

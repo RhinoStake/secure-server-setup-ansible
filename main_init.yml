@@ -1,6 +1,7 @@
 ---
 # To init a templated vsphere image for use
-- hosts: '{{ target }}'
+- name: Initial init of machines not ready for other playbooks
+  hosts: raw
   gather_facts: false
   become: true
   roles:

@@ -26,7 +26,7 @@
       - nvme-cli
       - bash-completion
       - lsof
-    state: latest
+    state: present
     update_cache: true
     cache_valid_time: 3600
 
@@ -44,11 +44,11 @@
 # Set tune profile
 - name: Set tuned server profile
   ansible.builtin.command: /usr/sbin/tuned-adm profile throughput-performance
-  when: tuned_check is failed 
+  when: tuned_check is failed
 
 # Add toml highlighter for vim
 - name: Add TOML vim plugin
   ansible.builtin.git:
     repo: https://github.com/cespare/vim-toml.git
     dest: /home/{{ ansible_user }}/.vim/pack/plugins/start/vim-toml
-
+    update: true

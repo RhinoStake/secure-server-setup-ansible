@@ -1,6 +1,6 @@
 ---
 - name: Install seed
-  hosts: '{{ target }}'
+  hosts: raw
   gather_facts: false
   roles:
-    - support_seed
+    - cosmos_seed

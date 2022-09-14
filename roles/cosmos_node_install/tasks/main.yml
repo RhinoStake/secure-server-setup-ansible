@@ -1,6 +1,5 @@
 ---
-
-#Install Go & Cosmovisor
+# Install Go & Cosmovisor
 - name: Install Cosmos Dependencies
   import_tasks: install_cosmos_dependencies.yml
 
@@ -9,30 +8,30 @@
   block:
     - name: Clone node repo
       ansible.builtin.git:
-        repo: '{{ repo }}'
-        dest: '{{ user_dir }}/source/{{ network }}'
-        version: '{{ node_version }}'
-        update: yes
-        force: yes
-        recursive: no
+        repo: "{{ repo }}"
+        dest: "{{ user_dir }}/source/{{ network }}"
+        version: "{{ node_version }}"
+        update: true
+        force: true
+        recursive: false
 
     - name: Change repo folder permission
       ansible.builtin.file:
-        path: '{{ user_dir }}/source/{{ network }}'
-        owner: '{{ ansible_user }}'
-        group: '{{ ansible_user }}'
+        path: "{{ user_dir }}/source/{{ network }}"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
         recurse: true
-        mode: '0755'
+        mode: "0755"
 
     - name: Install node
-      ansible.builtin.command: '{{ item }}'
+      ansible.builtin.command: "{{ item }}"
       args:
-        chdir: '{{ user_dir }}/source/{{ network }}'
+        chdir: "{{ user_dir }}/source/{{ network }}"
       with_items:
-        - 'make install'
+        - "make install"
       environment:
-        PATH: '{{ path }}'
-        GOPATH: '{{ user_dir }}/go'
+        PATH: "{{ path }}"
+        GOPATH: "{{ user_dir }}/go"
   when: binary is undefined
 
 - name: Install from binary

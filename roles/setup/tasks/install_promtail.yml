@@ -1,65 +1,66 @@
 ---
 - name: Create Promtail user
-  user:
+  ansible.builtin.user:
     name: promtail
-    comment: 'Promtail user'
+    comment: "Promtail user"
     shell: /usr/sbin/nologin
-    groups: ['systemd-journal', 'adm']
+    groups: ["systemd-journal", "adm"]
     state: present
 
 - name: Creates Promtail directory
-  file:
-    path: '/etc/promtail'
+  ansible.builtin.file:
+    path: "/etc/promtail"
     state: directory
     owner: promtail
     group: promtail
     recurse: true
-    mode: '0755'
+    mode: "0755"
   changed_when: false
 
-- name: install unzip
-  apt:
+- name: Install unzip
+  ansible.builtin.apt:
     name: unzip
     state: present
 
-- name: download Promtail
-  get_url:
-    url: 'https://github.com/grafana/loki/releases/download/{{ promtail_version }}/promtail-linux-amd64.zip'
-    dest: '/tmp/promtail-linux-amd64.zip'
-    mode: '0700'
+- name: Download Promtail
+  ansible.builtin.get_url:
+    url: "https://github.com/grafana/loki/releases/download/{{ promtail_version }}/promtail-linux-amd64.zip"
+    dest: "/tmp/promtail-linux-amd64.zip"
+    mode: "0700"
 
-- name: unarchive promtail
-  unarchive:
-    src: '/tmp/promtail-linux-amd64.zip'
-    remote_src: yes
-    dest: '/tmp'
+- name: Unarchive promtail
+  ansible.builtin.unarchive:
+    src: "/tmp/promtail-linux-amd64.zip"
+    remote_src: true
+    dest: "/tmp"
 
 - name: Copy binary file
-  copy:
-    src: '/tmp/promtail-linux-amd64'
-    dest: '/usr/local/bin/promtail'
+  ansible.builtin.copy:
+    src: "/tmp/promtail-linux-amd64"
+    dest: "/usr/local/bin/promtail"
     remote_src: true
     owner: promtail
     group: promtail
-    mode: '0755'
+    mode: "0755"
 
 - name: Copy promtail config
-  template:
-    src: 'promtail.yml.j2'
-    dest: '/etc/promtail/promtail.yml'
+  ansible.builtin.template:
+    src: "promtail.yml.j2"
+    dest: "/etc/promtail/promtail.yml"
     owner: promtail
     group: promtail
+    mode: "0600"
 
 - name: Copy promtail service file
-  copy:
-    src: 'promtail.service'
-    dest: '/etc/systemd/system/promtail.service'
+  ansible.builtin.copy:
+    src: "promtail.service"
+    dest: "/etc/systemd/system/promtail.service"
     owner: root
     group: root
-    mode: '0600'
+    mode: "0600"
 
-- name: start promtail service
-  systemd:
+- name: Start promtail service
+  ansible.builtin.systemd:
     name: promtail
     state: started
     daemon_reload: true

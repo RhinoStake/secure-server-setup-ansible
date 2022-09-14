@@ -1,15 +1,14 @@
 ---
 - name: Update network interfaces for colo managed devices
   ansible.builtin.template:
-   src: interfaces.j2
-   dest: '/etc/network/interfaces'
-   owner: 'root'
-   group: 'root'
-   mode: '0644'
+    src: interfaces.j2
+    dest: "/etc/network/interfaces"
+    owner: "root"
+    group: "root"
+    mode: "0644"
 
 - name: Reboot with new network
-  command: reboot
+  ansible.builtin.command: reboot
   async: 0
   poll: 0
   ignore_errors: true
-  

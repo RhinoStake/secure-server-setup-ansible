@@ -10,7 +10,6 @@
 
 - name: Install essentials
   import_tasks: install_essentials.yml
-
-#- name: Install promtail
+# - name: Install promtail
 #  import_tasks: install_promtail.yml
 #  when: promtail|default(false)|bool == true

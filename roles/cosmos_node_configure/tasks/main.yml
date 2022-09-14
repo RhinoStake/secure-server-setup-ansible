@@ -1,73 +1,73 @@
 ---
 - name: Register public ip
   ansible.builtin.uri:
-    url: 'https://api.ipify.org?format=json'
+    url: "https://api.ipify.org?format=json"
   register: public_ip
 
 - name: Set up external address
   ansible.builtin.lineinfile:
-    path: '{{ user_dir }}/{{ folder }}/config/config.toml'
+    path: "{{ user_dir }}/{{ folder }}/config/config.toml"
     regexp: 'external_address = "'
     line: 'external_address = "{{ public_ip.json.ip }}:{{ custom_port_prefix }}56"'
     state: present
 
 - name: Adjust config.toml port
   ansible.builtin.lineinfile:
-    path: '{{ user_dir }}/{{ folder }}/config/config.toml'
-    regexp: '{{ item.key }}'
-    line: '{{ item.value }}'
-  loop: '{{ config_port_changes | dict2items }}'
+    path: "{{ user_dir }}/{{ folder }}/config/config.toml"
+    regexp: "{{ item.key }}"
+    line: "{{ item.value }}"
+  loop: "{{ config_port_changes | dict2items }}"
 
 - name: Adjust Inbound Peers
   ansible.builtin.lineinfile:
-    path: '{{ user_dir }}/{{ folder }}/config/config.toml'
-    regexp: 'max_num_inbound_peers'
-    line: 'max_num_inbound_peers = 80'
+    path: "{{ user_dir }}/{{ folder }}/config/config.toml"
+    regexp: "max_num_inbound_peers"
+    line: "max_num_inbound_peers = 80"
 
 - name: Adjust Outbound Peers
   ansible.builtin.lineinfile:
-    path: '{{ user_dir }}/{{ folder }}/config/config.toml'
-    regexp: 'max_num_outbound_peers'
-    line: 'max_num_outbound_peers = 60'
+    path: "{{ user_dir }}/{{ folder }}/config/config.toml"
+    regexp: "max_num_outbound_peers"
+    line: "max_num_outbound_peers = 60"
 
 - name: Adjust app.toml ports
   ansible.builtin.lineinfile:
-    path: '{{ user_dir }}/{{ folder }}/config/app.toml'
-    regexp: '{{ item.key }}'
-    line: '{{ item.value }}'
-  loop: '{{ app_port_changes | dict2items }}'
+    path: "{{ user_dir }}/{{ folder }}/config/app.toml"
+    regexp: "{{ item.key }}"
+    line: "{{ item.value }}"
+  loop: "{{ app_port_changes | dict2items }}"
 
 - name: Adjust pruning settings
   ansible.builtin.lineinfile:
-    path: '{{ user_dir }}/{{ folder }}/config/app.toml'
-    regexp: '{{ item.key }}'
-    line: '{{ item.value }}'
-  loop: '{{ pruning | dict2items }}'
+    path: "{{ user_dir }}/{{ folder }}/config/app.toml"
+    regexp: "{{ item.key }}"
+    line: "{{ item.value }}"
+  loop: "{{ pruning | dict2items }}"
 
 - name: Adjust indexer setting for main and backup
   ansible.builtin.lineinfile:
-    path: '{{ user_dir }}/{{ folder }}/config/config.toml'
+    path: "{{ user_dir }}/{{ folder }}/config/config.toml"
     regexp: 'indexer = "'
     line: 'indexer = "null"'
     state: present
 
 - name: Open RPC port
   ansible.builtin.lineinfile:
-    path: '{{ user_dir }}/{{ folder }}/config/config.toml'
-    regexp: '{{ custom_port_prefix }}57'
+    path: "{{ user_dir }}/{{ folder }}/config/config.toml"
+    regexp: "{{ custom_port_prefix }}57"
     line: 'laddr = "tcp://0.0.0.0:{{ custom_port_prefix }}57"'
     state: present
 
 - name: Enable prometheus on the config.toml file
   ansible.builtin.lineinfile:
-    path: '{{ user_dir }}/{{ folder }}/config/config.toml'
-    regexp: '^prometheus ='
-    line: 'prometheus = true'
+    path: "{{ user_dir }}/{{ folder }}/config/config.toml"
+    regexp: "^prometheus ="
+    line: "prometheus = true"
     state: present
 
 - name: Ignore empty blocks
   ansible.builtin.lineinfile:
-    path: '{{ user_dir }}/{{ folder }}/config/config.toml'
-    regexp: '^create_empty_blocks ='
-    line: 'create_empty_blocks = false'
+    path: "{{ user_dir }}/{{ folder }}/config/config.toml"
+    regexp: "^create_empty_blocks ="
+    line: "create_empty_blocks = false"
     state: present

@@ -1,16 +1,16 @@
 ---
 - name: Update peers in config.toml file
   ansible.builtin.lineinfile:
-    path: '{{ user_dir }}/{{ folder }}/config/config.toml'
-    regexp: '^persistent_peers ='
+    path: "{{ user_dir }}/{{ folder }}/config/config.toml"
+    regexp: "^persistent_peers ="
     line: 'persistent_peers = "{{ peers }}"'
     state: present
   when: peers is defined
 
 - name: Update seeds in config.toml file
   ansible.builtin.lineinfile:
-    path: '{{ user_dir }}/{{ folder }}/config/config.toml'
-    regexp: '^seeds ='
+    path: "{{ user_dir }}/{{ folder }}/config/config.toml"
+    regexp: "^seeds ="
     line: 'seeds = "{{ seeds }}"'
     state: present
   when: seeds is defined
@@ -24,48 +24,48 @@
 
 - name: Create Cosmovisor directories
   ansible.builtin.file:
-    path: '{{ item }}'
+    path: "{{ item }}"
     state: directory
-    mode: '0755'
+    mode: "0755"
   with_items:
-    - '{{ user_dir }}/{{ folder }}/cosmovisor/genesis/bin'
-    - '{{ user_dir }}/{{ folder }}/cosmovisor/upgrades'
+    - "{{ user_dir }}/{{ folder }}/cosmovisor/genesis/bin"
+    - "{{ user_dir }}/{{ folder }}/cosmovisor/upgrades"
 
 - name: Copy daemon file to cosmovisor
   ansible.builtin.copy:
-    src: '{{ user_dir }}/go/bin/{{ daemon }}'
-    dest: '{{ user_dir }}/{{ folder }}/cosmovisor/genesis/bin'
+    src: "{{ user_dir }}/go/bin/{{ daemon }}"
+    dest: "{{ user_dir }}/{{ folder }}/cosmovisor/genesis/bin"
     remote_src: true
-    mode: '0755'
+    mode: "0755"
 
 - name: Copy service file
   become: true
   ansible.builtin.template:
-    src: 'cosmovisor.service.j2'
-    dest: '/etc/systemd/system/{{ daemon }}.service'
+    src: "cosmovisor.service.j2"
+    dest: "/etc/systemd/system/{{ daemon }}.service"
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
 
 - name: Enable cosmovisor service
   become: true
   ansible.builtin.systemd:
-    name: '{{ daemon }}'
-    daemon_reload: yes
-    enabled: yes
+    name: "{{ daemon }}"
+    daemon_reload: true
+    enabled: true
 
 - name: Create state_sync directory
   ansible.builtin.file:
-    path: '{{ user_dir }}/state_sync'
+    path: "{{ user_dir }}/state_sync"
     state: directory
-    mode: '0755'
+    mode: "0755"
   when: snap_rpc is defined
 
 - name: Copy state_sync file
   ansible.builtin.template:
-    src: 'state_sync.sh.j2'
-    dest: '{{ user_dir }}/state_sync/state_sync_{{ network }}.sh'
-    owner: '{{ ansible_user }}'
-    group: '{{ ansible_user }}'
-    mode: '0700'
+    src: "state_sync.sh.j2"
+    dest: "{{ user_dir }}/state_sync/state_sync_{{ network }}.sh"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0700"
   when: snap_rpc is defined

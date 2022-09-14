@@ -1,5 +1,5 @@
-- name: regular genesis download
+- name: Regular genesis download
   ansible.builtin.get_url:
-    url: '{{ genesis }}'
-    dest: '{{ user_dir }}/{{ folder }}/config/genesis.json'
-    mode: '0644'
+    url: "{{ genesis }}"
+    dest: "{{ user_dir }}/{{ folder }}/config/genesis.json"
+    mode: "0644"

@@ -6,32 +6,33 @@
 - name: Create folder for tenderseed files
   ansible.builtin.file:
     state: directory
-    path: '{{ user_dir }}/tenderseed/{{ network }}/config'
+    path: "{{ user_dir }}/tenderseed/{{ network }}/config"
+    mode: "0644"
 
 - name: Copy tenderseed config.toml
   ansible.builtin.template:
-    src: 'config.toml.j2'
-    dest: '{{ user_dir }}/tenderseed/{{ network }}/config/config.toml'
-    owner: '{{ ansible_user }}'
-    group: '{{ ansible_user }}'
-    mode: '0644'
+    src: "config.toml.j2"
+    dest: "{{ user_dir }}/tenderseed/{{ network }}/config/config.toml"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0644"
 
 - name: Copy node_key.json
   ansible.builtin.template:
-    src: 'node_key.json.j2'
-    dest: '{{ user_dir }}/tenderseed/{{ network }}/config/node_key.json'
-    owner: '{{ ansible_user }}'
-    group: '{{ ansible_user }}'
-    mode: '0644'
+    src: "node_key.json.j2"
+    dest: "{{ user_dir }}/tenderseed/{{ network }}/config/node_key.json"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0644"
 
 - name: Copy tenderseed service file
   become: true
   ansible.builtin.template:
-    src: 'tenderseed.service.j2'
-    dest: '/etc/systemd/system/tenderseed_{{ network }}.service'
+    src: "tenderseed.service.j2"
+    dest: "/etc/systemd/system/tenderseed_{{ network }}.service"
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
 
 - name: Open network port
   become: true
@@ -43,7 +44,7 @@
 - name: Start tenderseed service
   become: true
   ansible.builtin.systemd:
-    name: 'tenderseed_{{ network }}'
+    name: "tenderseed_{{ network }}"
     state: restarted
-    daemon_reload: yes
-    enabled: yes
+    daemon_reload: true
+    enabled: true

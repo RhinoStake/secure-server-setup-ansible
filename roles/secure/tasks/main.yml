@@ -3,30 +3,30 @@
   ansible.builtin.apt:
     name: ufw
     state: present
-    update_cache: yes
+    update_cache: true
 
 - name: Open RHINO subnets
   community.general.ufw:
-    rule: allow 
-    src: '{{ item }}'
+    rule: allow
+    src: "{{ item }}"
   loop:
     - 10.0.0.0/8
-    - 192.168.0.0/16 
+    - 192.168.0.0/16
     - 172.16.0.0/24
     - 38.32.16.56/29
 
 - name: Disable root login over SSH
   ansible.builtin.lineinfile:
-    dest: '/etc/ssh/sshd_config'
-    regexp: '^PermitRootLogin'
-    line: 'PermitRootLogin no'
+    dest: "/etc/ssh/sshd_config"
+    regexp: "^PermitRootLogin"
+    line: "PermitRootLogin no"
     state: present
 
 - name: Disable password login
   ansible.builtin.lineinfile:
-    dest: '/etc/ssh/sshd_config'
-    regexp: '^PasswordAuthentication'
-    line: 'PasswordAuthentication no'
+    dest: "/etc/ssh/sshd_config"
+    regexp: "^PasswordAuthentication"
+    line: "PasswordAuthentication no"
     state: present
 
 - name: Restart SSH
@@ -36,5 +36,5 @@
   changed_when: false
 
 - name: Enable firewall
-  community.general.ufw: 
+  community.general.ufw:
     state: enabled

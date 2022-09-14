@@ -1,5 +1,6 @@
 ---
-- hosts: all
+- name: Secure server to specifications
+  hosts: all
   gather_facts: false
   become: true
   roles:

@@ -1,5 +1,5 @@
 ---
-- name: Create users 
+- name: Create users
   ansible.builtin.user:
     name: "{{ ansible_user }}"
     password: "{{ password }}"
@@ -7,32 +7,35 @@
     shell: /bin/bash
 
 - name: Set authorized key 1
-  ansible.builtin.authorized_key:
+  ansible.posix.authorized_key:
     user: "{{ ansible_user }}"
     key: "{{ ssh_pubkey1 }}"
 
 - name: Set authorized key 2
-  ansible.builtin.authorized_key:
+  ansible.posix.authorized_key:
     user: "{{ ansible_user }}"
     key: "{{ ssh_pubkey2 }}"
 
 - name: Allow sudo for administrator
   ansible.builtin.copy:
-    content: '{{ ansible_user }} ALL=(ALL:ALL) NOPASSWD: ALL'
-    dest: '/etc/sudoers.d/{{ ansible_user }}'
+    content: "{{ ansible_user }} ALL=(ALL:ALL) NOPASSWD: ALL"
+    dest: "/etc/sudoers.d/{{ ansible_user }}"
+    owner: "root"
+    group: "root"
+    mode: "0440"
 
 - name: Create alias file
   ansible.builtin.template:
     src: bash_aliases.j2
-    dest: '/home/{{ ansible_user }}/.bash_aliases'
-    owner: '{{ ansible_user }}'
-    group: '{{ ansible_user }}'
-    mode: '0644'
+    dest: "/home/{{ ansible_user }}/.bash_aliases"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0644"
 
 - name: Create .screenrc
   ansible.builtin.template:
     src: screenrc.j2
-    dest: '/home/{{ ansible_user }}/.screenrc'
-    owner: '{{ ansible_user }}'
-    group: '{{ ansible_user }}'
-    mode: '0644'
+    dest: "/home/{{ ansible_user }}/.screenrc"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0644"

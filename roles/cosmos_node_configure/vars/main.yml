@@ -4,7 +4,7 @@ config_port_changes:
   'laddr = "tcp://127.0.0.1:26657"': 'laddr = "tcp://0.0.0.0:{{ custom_port_prefix }}57"'
   'proxy_app = "tcp://127.0.0.1:26658"': 'proxy_app = "tcp://127.0.0.1:{{ custom_port_prefix }}58"'
   ## Horcrux
-  #'priv_validator_laddr = ""': 'priv_validator_laddr = "tcp://0.0.0.0:{{ custom_port_prefix }}59"'
+  # 'priv_validator_laddr = ""': 'priv_validator_laddr = "tcp://0.0.0.0:{{ custom_port_prefix }}59"'
   'pprof_laddr = "localhost:6060"': 'pprof_laddr = "localhost:{{ custom_port_prefix }}60"'
   'prometheus_listen_addr = ":26660"': 'prometheus_listen_addr = ":{{ custom_port_prefix }}61"'
 app_port_changes:
@@ -16,4 +16,4 @@ pruning:
   'pruning = "': 'pruning = "custom"'
   'pruning-keep-recent = "': 'pruning-keep-recent = "101"'
   'pruning-interval = "': 'pruning-interval = "13"'
-  'snapshot-interval = ': 'snapshot-interval = 0'
+  "snapshot-interval = ": "snapshot-interval = 0"

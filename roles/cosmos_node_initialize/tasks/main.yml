@@ -1,36 +1,35 @@
 ---
-
 - name: Check if node has been initialized
   ansible.builtin.stat:
-    path: '{{ user_dir }}/{{ folder }}'
+    path: "{{ user_dir }}/{{ folder }}"
   register: node_initialized
 
 - name: Initialize Node
   block:
     - name: Init node
-      ansible.builtin.command: '{{ daemon }} init {{ node_name }} --chain-id {{ chain_id }} -o'
+      ansible.builtin.command: "{{ daemon }} init {{ node_name }} --chain-id {{ chain_id }} -o"
       environment:
-        PATH: '{{ path }}'
+        PATH: "{{ path }}"
 
     - name: Download config file
       ansible.builtin.get_url:
-        url: '{{ config_file }}'
-        dest: '{{ user_dir }}/{{ folder }}/config/config.toml'
-        mode: '0644'
+        url: "{{ config_file }}"
+        dest: "{{ user_dir }}/{{ folder }}/config/config.toml"
+        mode: "0644"
       when: config_file is defined
 
     - name: Download app file
       ansible.builtin.get_url:
-        url: '{{ app_file }}'
-        dest: '{{ user_dir }}/{{ folder }}/config/app.toml'
-        mode: '0644'
+        url: "{{ app_file }}"
+        dest: "{{ user_dir }}/{{ folder }}/config/app.toml"
+        mode: "0644"
       when: app_file is defined
 
     - name: Download addrbook.json file
       ansible.builtin.get_url:
-        url: '{{ addrbook_file }}'
-        dest: '{{ user_dir }}/{{ folder }}/config/addrbook.json'
-        mode: '0644'
+        url: "{{ addrbook_file }}"
+        dest: "{{ user_dir }}/{{ folder }}/config/addrbook.json"
+        mode: "0644"
       when: addrbook_file is defined
 
     - name: regular genesis download
@@ -47,13 +46,13 @@
 
     - name: targz genesis download
       include_tasks: genesis_targz.yml
-      when: genesis_processing is defined and genesis_processing == "targz" 
+      when: genesis_processing is defined and genesis_processing == "targz"
   when: not node_initialized.stat.exists
 
 - name: Update minimum gas price on config file
   ansible.builtin.lineinfile:
-    path: '{{ user_dir }}/{{ folder }}/config/app.toml'
-    regexp: '^minimum-gas-prices ='
+    path: "{{ user_dir }}/{{ folder }}/config/app.toml"
+    regexp: "^minimum-gas-prices ="
     line: 'minimum-gas-prices = "{{ minimum_gas_price }}"'
     state: present
   when: minimum_gas_price is defined

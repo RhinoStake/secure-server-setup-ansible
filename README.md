@@ -1,58 +1,71 @@
-# Secure Server Setup
+# RHINO Ansible Playbooks for Validator Operations
 
-Typically, a cloud server provides a machine with root access and insecure setup. This ansible playbook is designed to fix that. It is based on Ubuntu 20.04 (LTS) or 21.04 image, but it should be applicable to other Ubuntu images.
+This repository is a fork of two great upstream projects that formed 90% of the basis of this work:
 
-## Set Up Server
+- Polkachu's [Cosmos Validators](https://github.com/polkachu/cosmos-validators) repo, and
+- LavenderFive's [Secure Server Setup](https://github.com/LavenderFive/secure-server-setup-ansible) repo (which is a fork from Polkachu)
+
+Basically, all things lead back to Polkachu automation. One final note, constant reader, is that these playbooks are offered to you as inspiration, not implementation.
+
+## What's different in this repo
+
+Although mostly the same, our philosophy and use of hardware is slightly different than the sources of this fork. RHINO utilizes a combination of RHINO owned Enterprise hardware that sit in 2 North America based colos and cloud based servers positioned globally.
+
+This requires a mix of both vSphere and bare metal orchestration, including servers located by RHINO, Hetzner, OVH, Interserver or others.
+
+There are a few other notes of this repo:
+
+- Combined both server setup and "node" setup in a single repo
+- Extra playbooks to bootstrap vSphere template files (including multi-nic nodes)
+- Handle sudo enabled and non-sudo enabled servers
+- Additional tweaks based on our experience and needs
+
+## How to use this repository
 
 Copy inventory file
 
 ```bash
-cp inventory.sample inventory
+cp inventory.sample inventory.ini
 ```
 
-Update information in the inventory file. Mostly like you will need to update the server IP and hostname fields. Then run main ansible playbook.
+Update information in the inventory file. Mostly like you will need to update the server IP and hostname fields, create groups, all that. Then run main ansible playbook.
 
 ```bash
+
 ansible-playbook main.yml
+
+# Optionally with a `--limit groupname`
+
+# or, for some scripts that are reduced to a target
+
+anisble-playbook main.yaml -e "target=hostname"
+
 ```
 
-The main ansible playbook will both set up the machine and also secure the machine.
+`main_setup` and `main_secure` scripts are responsible for setting up a machine that already has a reasonable IP set. `main_init` helps provision from RHINO created templates from a colo managed environment. `*_node` playbooks are based on our experience and management of nodes at scale.
 
-### Set up machine:
+## High-Level Playbooks
 
-1. Create Users: Create "ansible" and "ubuntu" users and allow them sudo access. The idea is to have "ansible" to run ansible playbooks automatically and "ubuntu" for ad hoc manual server management. ("ubuntu" is my chosen user. You can configure it in inventory file)
-2. Configure Machine: Set the hostname (based on inventory file) and timezone (Los Angeles Time)
-3. Create aliases for easy server management
-4. Update machine: Simply update and upgrade all applications shipped with the OS.
-5. Install some essential software
-6. Optionally install node exporter (configurable in inventory)
-7. Optionally install promtail (configurable in inventory)
+### main_setup
 
-### Secure machine:
+1. We use a single user for ansible & job management, following the K.I.S.S. principle.
+2. Configure Machine: Update packages, set the hostname (based on inventory file), hosts file, user limits
+3. Install essential software, set machines to UTC, set appropriate `tuned` profile
+4. Add aliases for Cosmos job management
 
-1. Install firewall
-2. Install fail2ban
-3. Disable the default ssh port of 22, and set up the alternative port.
-4. Enable firewall to allow the alternative port and deny 22.
-5. Disable root account access
-6. Disable password authentication.
+### main_secure
 
-After running the main playbook, you can no longer re-run these two playbooks because you no longer have the root account access. Instead, you need to use "ubuntu" or "ansible" users to access server using ssh key through the alternative port.
+1. ufw & subnet rules appropriate for RHINO use
+2. Disable root account access & password authentication.
 
-## Other considerations
+## Warning
 
-You may want to experiment the machine setup without the security lock-down, or vice versa. The repo provides separate playbooks for setup and security
+By default, these `ufw` rules disable _all_ inbound access other than from specific subnets. Running this blind will lock you out of a cloud based machine.
 
-Setup:
+## Node Playbooks
 
-```bash
-ansible-playbook main_setup.yml
-```
+"Node" in this case means a blockchain node that is playing a role. For RHINO, we view these nodes as "100% disposable", simply processing information for the purposes of the signing cluster that will sign blocks.
 
-Security:
+From the configuration proposed for Cosmos nodes, for example, you will see heavily pruned nodes that will install the latest chain binary and be prepped to state-sync.
 
-```bash
-ansible-playbook main_security.yml
-```
-
-That's it!
+Any questions, reach out to us. Contact information is available on our website, [https://rhinostake.com}(https://rhinostake.com)].

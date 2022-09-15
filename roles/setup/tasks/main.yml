@@ -1,6 +1,7 @@
 ---
 - name: Update machine
   import_tasks: update_machine.yml
+  become: true
 
 - name: Create users
   include_tasks: create_users.yml

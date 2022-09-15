@@ -53,11 +53,4 @@
     dest: /home/{{ ansible_user }}/.vim/pack/plugins/start/vim-toml
     single_branch: true
     version: main
-
-# Add Consensus Tool
-- name: Add Consensus tool
-  ansible.builtin.git:
-    repo: https://github.com/Northa/consensus.git
-    dest: /home/{{ ansible_user }}/source/consensus
-    single_branch: true
-    version: main
+  become: false

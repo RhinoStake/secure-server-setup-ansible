@@ -1,8 +1,4 @@
 ---
-# Install Go & Cosmovisor
-- name: Install Cosmos Dependencies
-  import_tasks: install_cosmos_dependencies.yml
-
 # Install binary
 - name: Install from source
   block:

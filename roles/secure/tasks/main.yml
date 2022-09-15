@@ -14,6 +14,7 @@
     - 192.168.0.0/16
     - 172.16.0.0/24
     - 38.32.16.56/29
+    - 104.244.208.240/29
 
 - name: Disable root login over SSH
   ansible.builtin.lineinfile:

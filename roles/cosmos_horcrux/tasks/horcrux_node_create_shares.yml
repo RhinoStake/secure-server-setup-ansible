@@ -1,0 +1,78 @@
+- name: Find priv_validator_key.json
+  delegate_to: localhost
+  become: false
+  ansible.builtin.stat:
+    path: "{{ playbook_dir }}/keys/priv_validator_key.json"
+  register: key_exists
+
+- name: Multiple-Signers - generate and move keys
+  block:
+    - name: Multiple-Signers - generate private keys
+      delegate_to: localhost
+      become: false
+      ansible.builtin.command: "make genkeys"
+      run_once: true
+
+    - name: Multiple-Signers - find local key share
+      delegate_to: localhost
+      become: false
+      ansible.builtin.stat:
+        path: "{{ playbook_dir }}/keys/private_share_{{ my_share }}.json"
+      register: has_share
+
+    - name: Multiple-Signers - copy keys
+      ansible.builtin.copy:
+        src: "keys/private_share_{{ my_share }}.json"
+        dest: "{{ horcrux_dir }}/share.json"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0400"
+      when: has_share.stat.isreg is defined and has_share.stat.isreg
+
+    - name: Multiple-Signers - find remote key share
+      ansible.builtin.stat:
+        path: "{{ horcrux_dir }}/share.json"
+      register: share_moved
+
+    - name: Multiple-Signers - delete local share
+      become: false
+      delegate_to: localhost
+      ansible.builtin.file:
+        path: "{{ playbook_dir }}/keys/private_share_{{ my_share }}.json"
+        state: absent
+      when: share_moved.stat.exists
+
+    - name: Multiple-Signers - delete priv_validator_key.json
+      become: false
+      delegate_to: localhost
+      ansible.builtin.file:
+        path: "{{ playbook_dir }}/keys/priv_validator_key.json"
+        state: absent
+      run_once: true
+      when: share_moved.stat.exists
+  when: key_exists.stat.exists and shares > 1
+
+- name: (Single Signer) Move key
+  block:
+    - name: Single-Signer - copy keys
+      ansible.builtin.copy:
+        src: "keys/priv_validator_key.json"
+        dest: "{{ horcrux_dir }}/priv_validator_key.json"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0400"
+
+    - name: Single-Signer - find remote key share
+      ansible.builtin.stat:
+        path: "{{ horcrux_dir }}/priv_validator_key.json"
+      register: share_moved
+
+    - name: Single-Signer - delete priv_validator_key.json
+      become: false
+      delegate_to: localhost
+      ansible.builtin.file:
+        path: "{{ playbook_dir }}/keys/priv_validator_key.json"
+        state: absent
+      run_once: true
+      when: share_moved.stat.exists
+  when: key_exists.stat.exists and shares == 1

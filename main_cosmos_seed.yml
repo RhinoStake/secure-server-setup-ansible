@@ -1,6 +1,7 @@
 ---
 - name: Install seed
-  hosts: raw
+  hosts: seeds
   gather_facts: false
   roles:
+    - cosmos_node_dependencies
     - cosmos_seed

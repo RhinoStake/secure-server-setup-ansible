@@ -1,0 +1,16 @@
+- name: Clone horcrux repo
+  ansible.builtin.git:
+    repo: "{{ horcrux_repo }}"
+    dest: "{{ user_dir }}/source/horcrux"
+    version: "{{ horcrux_version }}"
+    update: true
+
+- name: Install horcrux
+  ansible.builtin.command: "{{ item }}"
+  args:
+    chdir: "{{ user_dir }}/source/horcrux"
+  with_items:
+    - "make install"
+  environment:
+    PATH: "{{ path }}"
+    GOPATH: "{{ user_dir }}/go"

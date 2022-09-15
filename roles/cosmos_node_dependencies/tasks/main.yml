@@ -1,0 +1,36 @@
+- name: Download go
+  ansible.builtin.get_url:
+    url: "https://golang.org/dl/{{ go_release }}"
+    dest: "/tmp/{{ go_release }}"
+    mode: "0700"
+
+- name: Remove binary
+  ansible.builtin.file:
+    path: /usr/local/go
+    state: absent
+  become: true
+  ignore_errors: true
+
+- name: Unarchive go release
+  ansible.builtin.unarchive:
+    src: /tmp/{{ go_release }}
+    dest: /usr/local
+    remote_src: true
+  become: true
+
+# Copy .profile with GO additions
+- name: Copy .profile
+  ansible.builtin.template:
+    src: "profile.j2"
+    dest: "{{ user_dir }}/.profile"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0600"
+
+- name: Change go folder permission
+  ansible.builtin.file:
+    path: "{{ user_dir }}/go"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    recurse: true
+    mode: "0755"

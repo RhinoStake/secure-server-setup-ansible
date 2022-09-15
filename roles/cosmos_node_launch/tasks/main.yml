@@ -22,6 +22,12 @@
     proto: tcp
     port: "{{ custom_port_prefix }}56"
 
+- name: Go install cosmovisor
+  ansible.builtin.shell: "go install github.com/cosmos/cosmos-sdk/cosmovisor/cmd/cosmovisor@{{ cosmovisor_version }}"
+  environment:
+    PATH: "/usr/local/go/bin"
+    GOPATH: "{{ user_dir }}/go"
+
 - name: Create Cosmovisor directories
   ansible.builtin.file:
     path: "{{ item }}"
@@ -69,3 +75,11 @@
     group: "{{ ansible_user }}"
     mode: "0700"
   when: snap_rpc is defined
+
+  # Add Consensus Tool
+- name: Add Consensus tool
+  ansible.builtin.git:
+    repo: https://github.com/Northa/consensus.git
+    dest: /home/{{ ansible_user }}/source/consensus
+    single_branch: true
+    version: main

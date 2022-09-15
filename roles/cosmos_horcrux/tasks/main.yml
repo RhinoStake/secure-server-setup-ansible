@@ -1,0 +1,11 @@
+---
+# Horcrux playbook
+
+- name: Install horcrux
+  import_tasks: horcrux_node_install.yml
+
+- name: Configure horcrux
+  import_tasks: horcrux_node_configure.yml
+
+- name: Create and move keys
+  import_tasks: horcrux_node_create_shares.yml

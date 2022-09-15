@@ -6,6 +6,7 @@
     - "{{ var_file }}"
     - "{{ user_file }}"
   roles:
+    - cosmos_node_dependencies
     - cosmos_node_install
     - cosmos_node_initialize
     - cosmos_node_configure

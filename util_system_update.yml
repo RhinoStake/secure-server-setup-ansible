@@ -1,5 +1,6 @@
 ---
-- hosts: '{{ target }}'
+- name: System updates
+  hosts: all
   become: true
   roles:
     - util_system_update

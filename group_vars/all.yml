@@ -1,11 +1,30 @@
 # go
-go_release: 'go1.18.6.linux-amd64.tar.gz'
+go_release: "go1.18.6.linux-arm64.tar.gz"
 
 # cosmovisor
-cosmovisor_version: 'v1.0.0'
+cosmovisor_version: "v1.0.0"
 
 # promtail
 promtail: false
-promtail_version: '2.4.1'
-promtail_monitor: 'http://192.168.0.0:3100'
-promtail_name: 'something'
+promtail_version: "2.4.1"
+promtail_monitor: "http://192.168.0.0:3100"
+promtail_name: "something"
+
+# horcrux versioning
+horcrux_repo: "https://github.com/strangelove-ventures/horcrux"
+horcrux_version: "v2.0.0"
+
+# horcrux vars
+rpc_timeout: "1000ms"
+threshold: 2
+shares: 3
+horcrux_dir: "{{ user_dir }}/.horcrux/{{ network }}"
+service_file: "horcrux_{{ network }}.service"
+
+horcrux_peers:
+  - share_id: 1
+    p2p_addr: "{{ signer1 }}"
+  - share_id: 2
+    p2p_addr: "{{ signer2 }}"
+  - share_id: 3
+    p2p_addr: "{{ signer3 }}"

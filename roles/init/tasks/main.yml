@@ -7,6 +7,14 @@
     group: "root"
     mode: "0644"
 
+- name: Install resolvconf to force external DNS servers
+  ansible.builtin.apt:
+    name:
+      - resolvconf
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
 - name: Reboot with new network
   ansible.builtin.command: reboot
   async: 0

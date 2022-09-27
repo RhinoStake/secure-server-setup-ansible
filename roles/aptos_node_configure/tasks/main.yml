@@ -1,0 +1,40 @@
+---
+- name: Create chain folder if it does not exist
+  ansible.builtin.file:
+    path: "{{ user_dir }}/{{ folder }}"
+    state: directory
+    mode: "0755"
+
+- name: Copy appropriate config
+  ansible.builtin.template:
+    src: "{{ aptos_role }}.j2"
+    dest: "{{ user_dir }}/{{ folder }}/{{ aptos_role }}.yaml"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0600"
+
+- name: Pull waypoint.txt
+  ansible.builtin.get_url:
+    url: "{{ waypoint }}"
+    dest: "{{ user_dir }}/{{ folder }}/waypoint.txt"
+    mode: "0644"
+
+- name: Pull genesis.blob
+  ansible.builtin.get_url:
+    url: "{{ genesis_blob }}"
+    dest: "{{ user_dir }}/{{ folder }}/genesis.blob"
+    mode: "0644"
+
+- name: Open p2p port
+  become: true
+  community.general.ufw:
+    rule: allow
+    proto: tcp
+    port: "{{ p2p_port }} "
+
+- name: Open api port
+  become: true
+  community.general.ufw:
+    rule: allow
+    proto: tcp
+    port: "{{ api_port }} "

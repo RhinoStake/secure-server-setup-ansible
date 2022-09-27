@@ -1,0 +1,53 @@
+---
+- name: fetch git repo
+  become: yes
+  become_user: "{{ daemon_user_name }}"
+  git:
+    repo: "{{ git_repo }}"
+    version: "{{ git_tag }}"
+    dest: "{{ daemon_user_dir }}/{{ git_dir_name }}"
+    update: yes
+    force: yes
+  tags:
+    - refresh
+
+# requires 'ansible-galaxy collection install community.general'
+- name: build daemon
+  become: yes
+  become_user: "{{ daemon_user_name }}"
+  environment:
+    GOBIN: "{{ daemon_user_dir }}/bin"
+    GOPATH: "{{ daemon_user_dir }}"
+  make:
+    chdir: "{{ daemon_user_dir }}/{{ git_dir_name }}"
+    target: "{{ make_arg }}"
+  tags:
+    - refresh
+
+# ... bunch of other stuff ...
+
+- name: create cosmovisor upgrade directory
+  file:
+    state: directory
+    path: "{{ item }}"
+    owner: "{{ daemon_user_name }}"
+    group: "{{ daemon_user_name }}"
+    mode: "0755"
+  with_items:
+    - "{{ daemon_home }}/cosmovisor/upgrades/{{ cosmovisor_upgrade_dir }}/bin"
+  when: cosmovisor_upgrade_dir != ""
+  tags:
+    - refresh
+
+- name: copy daemon to cosmovisor upgrade dir
+  copy:
+    remote_src: yes
+    src: "{{ daemon_user_dir }}/bin/{{ daemon_name }}"
+    dest: "{{ daemon_home }}/cosmovisor/upgrades/{{ cosmovisor_upgrade_dir }}/bin/{{ daemon_name }}"
+    owner: "{{ daemon_user_name }}"
+    group: "{{ daemon_user_name }}"
+    mode: "0755"
+    force: no
+  when: cosmovisor_upgrade_dir != ""
+  tags:
+    - refresh

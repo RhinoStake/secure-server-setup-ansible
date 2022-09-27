@@ -11,3 +11,4 @@
     - cosmos_node_initialize
     - cosmos_node_configure
     - cosmos_node_launch
+    - { role: stargaze_api_configure, when: rpc }

@@ -1,0 +1,16 @@
+---
+- name: Copy service file
+  become: true
+  ansible.builtin.template:
+    src: "aptos-node.service.j2"
+    dest: "/etc/systemd/system/aptos-node.service"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Enable aptos-node service
+  become: true
+  ansible.builtin.systemd:
+    name: "aptos-node"
+    daemon_reload: true
+    enabled: true

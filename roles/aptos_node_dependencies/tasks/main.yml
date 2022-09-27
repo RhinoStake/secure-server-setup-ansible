@@ -1,0 +1,18 @@
+---
+- name: Update aptos repo for use for setup script
+  ansible.builtin.git:
+    repo: "{{ repo }}"
+    dest: "{{ user_dir }}/source/{{ network }}"
+    version: main
+    update: true
+    force: true
+    recursive: false
+
+- name: Run/update Aptos prep script
+  ansible.builtin.command: "{{ item }}"
+  args:
+    chdir: "{{ user_dir }}/source/{{ network }}"
+  with_items:
+    - "./scripts/dev_setup.sh -b"
+  environment:
+    PATH: "{{ path }}"

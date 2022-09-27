@@ -1,5 +1,5 @@
 ---
-- name: Update peers in config.toml file
+- name: Update peers in config.toml
   ansible.builtin.lineinfile:
     path: "{{ user_dir }}/{{ folder }}/config/config.toml"
     regexp: "^persistent_peers ="
@@ -7,7 +7,7 @@
     state: present
   when: peers is defined
 
-- name: Update seeds in config.toml file
+- name: Update seeds in config.toml
   ansible.builtin.lineinfile:
     path: "{{ user_dir }}/{{ folder }}/config/config.toml"
     regexp: "^seeds ="
@@ -15,20 +15,20 @@
     state: present
   when: seeds is defined
 
-- name: Open p2p port
+- name: Open p2p port in ufw
   become: true
   community.general.ufw:
     rule: allow
     proto: tcp
     port: "{{ custom_port_prefix }}56"
 
-- name: Go install cosmovisor
+- name: Install cosmovisor
   ansible.builtin.shell: "go install github.com/cosmos/cosmos-sdk/cosmovisor/cmd/cosmovisor@{{ cosmovisor_version }}"
   environment:
     PATH: "/usr/local/go/bin"
     GOPATH: "{{ user_dir }}/go"
 
-- name: Create Cosmovisor directories
+- name: Create Cosmovisor directories for binary
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
@@ -37,14 +37,14 @@
     - "{{ user_dir }}/{{ folder }}/cosmovisor/genesis/bin"
     - "{{ user_dir }}/{{ folder }}/cosmovisor/upgrades"
 
-- name: Copy daemon file to cosmovisor
+- name: Copy binary into cosmovisor directory
   ansible.builtin.copy:
     src: "{{ user_dir }}/go/bin/{{ daemon }}"
     dest: "{{ user_dir }}/{{ folder }}/cosmovisor/genesis/bin"
     remote_src: true
     mode: "0755"
 
-- name: Copy service file
+- name: Copy cosmovisor systemctl service file for binary
   become: true
   ansible.builtin.template:
     src: "cosmovisor.service.j2"
@@ -53,7 +53,7 @@
     group: root
     mode: "0644"
 
-- name: Enable cosmovisor service
+- name: Enable cosmovisor service for binary
   become: true
   ansible.builtin.systemd:
     name: "{{ daemon }}"

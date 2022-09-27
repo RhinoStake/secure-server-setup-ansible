@@ -1,0 +1,16 @@
+network: stargaze
+folder: ".starsd"
+daemon: starsd
+chain_id: stargaze-1
+node_version: "v7.0.0"
+repo: "https://github.com/public-awesome/stargaze"
+genesis: "https://raw.githubusercontent.com/public-awesome/mainnet/main/stargaze-1/genesis.tar.gz"
+genesis_processing: targz
+seeds: "ade4d8bc8cbe014af6ebdf3cb7b1e9ad36f412c0@seeds.polkachu.com:37656,2f7b2d38b1a4f76b20e917e01fb9f4a200bbf80c@seeds.pupmos.network:2004"
+custom_port_prefix: 137
+snap_rpc: "https://stargaze-rpc.polkachu.com:443"
+
+# [Optional] Snapshot
+snapshot_hour: 2
+snapshot_minute: 30
+wasm: true

@@ -1,0 +1,9 @@
+network: aptos
+folder: mainnet
+repo: https://github.com/aptos-labs/aptos-core
+node_version: testnet
+chain_id: 2
+genesis_blob: https://github.com/aptos-labs/aptos-genesis-waypoint/raw/main/testnet/genesis.blob
+waypoint: https://github.com/aptos-labs/aptos-genesis-waypoint/raw/main/testnet/waypoint.txt
+p2p_port: 6180
+api_port: 8080

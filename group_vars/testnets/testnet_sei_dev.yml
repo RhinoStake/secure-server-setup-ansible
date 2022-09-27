@@ -1,0 +1,9 @@
+network: sei
+folder: ".sei"
+daemon: seid
+chain_id: "sei-devnet-1"
+node_version: "1.2.0beta"
+repo: https://github.com/sei-protocol/sei-chain.git
+genesis: https://github.com/sei-protocol/testnet/raw/main/sei-devnet-1/genesis.json
+custom_port_prefix: 119
+snap_rpc: http://54.183.99.245:26657

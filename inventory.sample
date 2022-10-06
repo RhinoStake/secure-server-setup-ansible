@@ -5,10 +5,10 @@
 ansible_ssh_user=root
 ansible_ssh_private_key_file="~/.ssh/id_rsa"
 
-hostname="SERVER_NAME"
-deployment_user="USER_NAME"
-ssh_port=22222
-disable_root=true
+[aptos]
+server1 ansible_host=192.168.0.1 aptos_role=validator
+server2 ansible_host=192.168.0.2 aptos_role=vfn
+server3 ansible_host=192.168.0.3 aptos_role=pfn
 
 # Node Exporter
 node_exporter=false

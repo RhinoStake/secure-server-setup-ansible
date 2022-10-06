@@ -3,3 +3,4 @@ users.yml
 roles/cosmos_seed/templates/node_key.json.j2
 keys
 .DS_Store
+vault-password-file

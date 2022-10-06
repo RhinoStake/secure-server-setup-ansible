@@ -83,3 +83,8 @@
     dest: /home/{{ ansible_user }}/source/consensus
     single_branch: true
     version: main
+# - name: Add blockpane's pvtop
+#   ansible.builtin.shell: "go install github.com/blockpane/pvtop@latest"
+#   environment:
+#     PATH: "/usr/local/go/bin"
+#     GOPATH: "{{ user_dir }}/go"

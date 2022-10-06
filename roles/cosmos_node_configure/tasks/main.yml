@@ -56,7 +56,7 @@
     regexp: 'indexer = "'
     line: 'indexer = "null"'
     state: present
-  when: rpc
+  when: rpc is undefined
 
 - name: Bind RPC port to 0.0.0.0
   ansible.builtin.lineinfile:
@@ -71,9 +71,3 @@
     regexp: "^prometheus ="
     line: "prometheus = true"
     state: present
-# - name: Ignore empty blocks
-#   ansible.builtin.lineinfile:
-#     path: "{{ user_dir }}/{{ folder }}/config/config.toml"
-#     regexp: "^create_empty_blocks ="
-#     line: "create_empty_blocks = false"
-#     state: present

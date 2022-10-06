@@ -24,10 +24,3 @@
     block: |
       simulation_gas_limit = 20000000
       memory_cache_size = 4000
-
-- name: Adjust indexer settings for RPC
-  ansible.builtin.lineinfile:
-    path: "{{ user_dir }}/{{ folder }}/config/config.toml"
-    regexp: 'indexer = "'
-    line: 'indexer = "kv"'
-    state: present

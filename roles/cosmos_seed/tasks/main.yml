@@ -1,13 +1,14 @@
 ---
 #
 ## Assumes tenderseed is already installed on node
+## Seed address: babc3f3f7804933265ec9c40ad94f4da8e9e0017@seed.rhinostake.com:{{ custom_port_prefix }}56
 #
 # Create tenderseed folder
 - name: Create folder for tenderseed files
   ansible.builtin.file:
     state: directory
     path: "{{ user_dir }}/tenderseed/{{ network }}/config"
-    mode: "0644"
+    mode: "0755"
 
 - name: Copy tenderseed config.toml
   ansible.builtin.template:

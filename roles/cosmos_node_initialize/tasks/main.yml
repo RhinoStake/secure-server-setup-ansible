@@ -5,6 +5,7 @@
   register: node_initialized
 
 - name: Initialize Node
+  when: not node_initialized.stat.exists
   block:
     - name: Init node
       ansible.builtin.command: "{{ daemon }} init {{ node_name }} --chain-id {{ chain_id }} -o"
@@ -47,7 +48,6 @@
     - name: targz genesis download
       include_tasks: genesis_targz.yml
       when: genesis_processing is defined and genesis_processing == "targz"
-  when: not node_initialized.stat.exists
 
 - name: Update minimum gas price on config file
   ansible.builtin.lineinfile:

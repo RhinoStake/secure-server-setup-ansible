@@ -16,7 +16,6 @@
     - "nice -n 10 cargo clean"
     - "nice -n 10 cargo build --package aptos --profile release"
     - "nice -n 10 cargo build --package aptos-node --profile release"
-    - "nice -n 10 cargo clean"
   environment:
     PATH: "{{ path }}"
 
@@ -32,4 +31,3 @@
   loop:
     - aptos
     - aptos-node
-  notify: Restart aptos-node

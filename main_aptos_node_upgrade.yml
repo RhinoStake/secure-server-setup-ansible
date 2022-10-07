@@ -7,3 +7,11 @@
   roles:
     - aptos_node_dependencies
     - aptos_node_install
+
+  post_tasks:
+    - name: Restart service
+      become: true
+      ansible.builtin.systemd:
+        name: "aptos-node"
+        daemon_reload: true
+        state: restarted

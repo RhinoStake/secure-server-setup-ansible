@@ -26,6 +26,8 @@
       - nvme-cli
       - bash-completion
       - lsof
+      - rsync
+      - mdadm
     state: present
     update_cache: true
     cache_valid_time: 3600
@@ -35,22 +37,30 @@
   community.general.timezone:
     name: Etc/UTC
 
-# Check tuned profile
-- name: Check tuned profile
-  ansible.builtin.shell: '/usr/sbin/tuned-adm profile | grep "Current active profile: throughput-performance"'
-  register: tuned_check
-  ignore_errors: true
-
 # Set tune profile
-- name: Set tuned server profile
+- name: Force tuned server profile to throughput-performance
   ansible.builtin.command: /usr/sbin/tuned-adm profile throughput-performance
-  when: tuned_check is failed
 
 # Add toml highlighter for vim
 - name: Add TOML vim plugin
+  become: false
   ansible.builtin.git:
     repo: https://github.com/cespare/vim-toml.git
     dest: /home/{{ ansible_user }}/.vim/pack/plugins/start/vim-toml
     single_branch: true
     version: main
+
+- name: Create source if it does not exist
   become: false
+  ansible.builtin.file:
+    path: "{{ user_dir }}/source"
+    state: directory
+    mode: "0755"
+
+- name: Add Yet Another Benchmark script
+  become: false
+  ansible.builtin.git:
+    repo: https://github.com/masonr/yet-another-bench-script.git
+    dest: /home/{{ ansible_user }}/source/yabs
+    single_branch: true
+    version: master

@@ -1,11 +1,33 @@
 ---
-- name: Update network interfaces for colo managed devices
+- name: Update network interfaces for devices with dual static IPs
   ansible.builtin.template:
-    src: interfaces.j2
+    src: interfaces-dual.j2
     dest: "/etc/network/interfaces"
     owner: "root"
     group: "root"
     mode: "0644"
+  when:
+    - internal_ip is defined
+    - external_ip is defined
+
+- name: Update network interfaces for devices when just internal IP
+  ansible.builtin.template:
+    src: interfaces-internalOnly.j2
+    dest: "/etc/network/interfaces"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  when:
+    - internal_ip is defined
+    - external_ip is not defined
+
+- name: Install resolvconf to force external DNS servers
+  ansible.builtin.apt:
+    name:
+      - resolvconf
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
 
 - name: Reboot with new network
   ansible.builtin.command: reboot

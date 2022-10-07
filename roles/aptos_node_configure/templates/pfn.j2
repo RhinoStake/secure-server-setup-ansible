@@ -1,0 +1,28 @@
+base:
+    # Update this value to the location you want the node to store its database
+    data_dir: "{{ user_dir }}/{{ folder }}/data"
+    role: "full_node"
+    waypoint:
+        # Update this value to that which the blockchain publicly provides. Please regard the directions
+        # below on how to safely manage your genesis_file_location with respect to the waypoint.
+        from_file: "{{ user_dir }}/{{ folder }}/waypoint.txt"
+
+execution:
+    # Update this to the location to where the genesis.blob is stored, prefer fullpaths
+    # Note, this must be paired with a waypoint. If you update your waypoint without a
+    # corresponding genesis, the file location should be an empty path.
+    genesis_file_location: "{{ user_dir }}/{{ folder }}/genesis.blob"
+
+full_node_networks:
+    - discovery_method: "onchain"
+      # The network must have a listen address to specify protocols. This runs it locally to
+      # prevent remote, incoming connections.
+      listen_address: "/ip4/0.0.0.0/tcp/{{ p2p_port }}"
+      network_id: "public"
+      # Define the upstream peers to connect to
+      seeds:
+        {}
+
+api:
+    enabled: true
+    address: 0.0.0.0:{{ api_port }}

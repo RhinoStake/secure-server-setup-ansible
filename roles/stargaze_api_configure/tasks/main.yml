@@ -1,0 +1,26 @@
+---
+- name: Adjust iavl cache
+  ansible.builtin.lineinfile:
+    path: "{{ user_dir }}/{{ folder }}/config/app.toml"
+    regexp: "iavl-cache-size"
+    line: "iavl-cache-size = 3906250"
+
+- name: Enable unsafe CORS
+  ansible.builtin.lineinfile:
+    path: "{{ user_dir }}/{{ folder }}/config/app.toml"
+    regexp: "enabled-unsafe-cors"
+    line: "enabled-unsafe-cors = true"
+
+- name: Adjust wasm information
+  ansible.builtin.lineinfile:
+    path: "{{ user_dir }}/{{ folder }}/config/app.toml"
+    regexp: "query_gas_limit"
+    line: "query_gas_limit = 1000000"
+
+- name: Add additional wasm items
+  ansible.builtin.blockinfile:
+    path: "{{ user_dir }}/{{ folder }}/config/app.toml"
+    insertafter: "query_gas_limit = 1000000"
+    block: |
+      simulation_gas_limit = 20000000
+      memory_cache_size = 4000

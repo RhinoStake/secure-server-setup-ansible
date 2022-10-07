@@ -2,17 +2,17 @@
 # Hostname
 - name: Change hostname
   ansible.builtin.hostname:
-    name: '{{ inventory_hostname }}'
+    name: "{{ inventory_hostname }}"
     use: debian
 
 # Modify Hosts
 - name: Update hosts file
   ansible.builtin.template:
     src: etc_hosts.j2
-    dest: '/etc/hosts'
-    owner: 'root'
-    group: 'root'
-    mode: '0644'
+    dest: "/etc/hosts"
+    owner: "root"
+    group: "root"
+    mode: "0644"
 
 # Update limits
 - name: Update limits for user

@@ -1,0 +1,8 @@
+---
+- name: Cosmos Prep for manual gentx
+  hosts: all
+  gather_facts: false
+  vars_files:
+    - "{{ user_file }}"
+  roles:
+    - cosmos_node_dependencies

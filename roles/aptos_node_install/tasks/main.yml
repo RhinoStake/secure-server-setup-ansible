@@ -1,0 +1,33 @@
+---
+- name: Update aptos repo for node install
+  ansible.builtin.git:
+    repo: "{{ repo }}"
+    dest: "{{ user_dir }}/source/{{ network }}"
+    version: "{{ node_version }}"
+    update: true
+    force: true
+    recursive: true
+
+- name: Build aptos and aptos-node
+  ansible.builtin.command: "{{ item }}"
+  args:
+    chdir: "{{ user_dir }}/source/{{ network }}"
+  with_items:
+    - "nice -n 10 cargo clean"
+    - "nice -n 10 cargo build --package aptos --profile release"
+    - "nice -n 10 cargo build --package aptos-node --profile release"
+  environment:
+    PATH: "{{ path }}"
+
+- name: Copy binaries
+  become: true
+  ansible.builtin.copy:
+    src: "{{ user_dir }}/source/{{ network }}/target/release/{{ item }}"
+    dest: "/usr/local/bin"
+    owner: root
+    group: root
+    mode: 0755
+    remote_src: true
+  loop:
+    - aptos
+    - aptos-node

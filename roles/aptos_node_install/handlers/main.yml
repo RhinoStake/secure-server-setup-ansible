@@ -1,0 +1,7 @@
+---
+- name: Restart aptos-node
+  become: true
+  ansible.builtin.systemd:
+    name: "aptos-node"
+    daemon_reload: true
+    state: restarted

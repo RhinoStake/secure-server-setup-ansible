@@ -4,33 +4,33 @@
     url: "https://api.ipify.org?format=json"
   register: public_ip
 
-- name: Set up external address
+- name: Set external address in config.toml
   ansible.builtin.lineinfile:
     path: "{{ user_dir }}/{{ folder }}/config/config.toml"
     regexp: 'external_address = "'
     line: 'external_address = "{{ public_ip.json.ip }}:{{ custom_port_prefix }}56"'
     state: present
 
-- name: Adjust config.toml port
+- name: Adjust config.toml port settings
   ansible.builtin.lineinfile:
     path: "{{ user_dir }}/{{ folder }}/config/config.toml"
     regexp: "{{ item.key }}"
     line: "{{ item.value }}"
   loop: "{{ config_port_changes | dict2items }}"
 
-- name: Adjust Inbound Peers
+- name: Adjust number of inbound peers
   ansible.builtin.lineinfile:
     path: "{{ user_dir }}/{{ folder }}/config/config.toml"
     regexp: "max_num_inbound_peers"
     line: "max_num_inbound_peers = 80"
 
-- name: Adjust Outbound Peers
+- name: Adjust number of outbound peers
   ansible.builtin.lineinfile:
     path: "{{ user_dir }}/{{ folder }}/config/config.toml"
     regexp: "max_num_outbound_peers"
     line: "max_num_outbound_peers = 60"
 
-- name: Adjust app.toml ports
+- name: Adjust app.toml port settings
   ansible.builtin.lineinfile:
     path: "{{ user_dir }}/{{ folder }}/config/app.toml"
     regexp: "{{ item.key }}"
@@ -44,30 +44,30 @@
     line: "{{ item.value }}"
   loop: "{{ pruning | dict2items }}"
 
-- name: Adjust indexer setting for main and backup
+- name: Enable API in app.toml
+  ansible.builtin.replace:
+    path: "{{ user_dir }}/{{ folder }}/config/app.toml"
+    regexp: "# Enable defines if the API(.*)\\senable = false"
+    replace: "# Enable defines if the API server should be enabled.\\nenable = true"
+
+- name: Set indexer to null for non-RPC nodes
   ansible.builtin.lineinfile:
     path: "{{ user_dir }}/{{ folder }}/config/config.toml"
     regexp: 'indexer = "'
     line: 'indexer = "null"'
     state: present
+  when: rpc is undefined
 
-- name: Open RPC port
+- name: Bind RPC port to 0.0.0.0
   ansible.builtin.lineinfile:
     path: "{{ user_dir }}/{{ folder }}/config/config.toml"
     regexp: "{{ custom_port_prefix }}57"
     line: 'laddr = "tcp://0.0.0.0:{{ custom_port_prefix }}57"'
     state: present
 
-- name: Enable prometheus on the config.toml file
+- name: Enable Prometheus in config.toml
   ansible.builtin.lineinfile:
     path: "{{ user_dir }}/{{ folder }}/config/config.toml"
     regexp: "^prometheus ="
     line: "prometheus = true"
-    state: present
-
-- name: Ignore empty blocks
-  ansible.builtin.lineinfile:
-    path: "{{ user_dir }}/{{ folder }}/config/config.toml"
-    regexp: "^create_empty_blocks ="
-    line: "create_empty_blocks = false"
     state: present

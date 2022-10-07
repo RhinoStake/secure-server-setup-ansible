@@ -1,14 +1,13 @@
 # go
-go_release: "go1.18.6.linux-arm64.tar.gz"
+go_release: "go1.18.6.linux-amd64.tar.gz"
 
 # cosmovisor
 cosmovisor_version: "v1.0.0"
 
 # promtail
-promtail: false
-promtail_version: "2.4.1"
-promtail_monitor: "http://192.168.0.0:3100"
-promtail_name: "something"
+promtail: true
+promtail_version: "v2.6.1"
+promtail_monitor: "http://10.254.100.13:3100"
 
 # horcrux versioning
 horcrux_repo: "https://github.com/strangelove-ventures/horcrux"

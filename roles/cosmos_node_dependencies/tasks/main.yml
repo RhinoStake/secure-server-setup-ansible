@@ -4,7 +4,7 @@
     dest: "/tmp/{{ go_release }}"
     mode: "0700"
 
-- name: Remove binary
+- name: Remove go binary
   ansible.builtin.file:
     path: /usr/local/go
     state: absent

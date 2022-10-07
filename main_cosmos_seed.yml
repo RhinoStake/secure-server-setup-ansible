@@ -1,7 +1,9 @@
 ---
 - name: Install seed
-  hosts: seeds
+  hosts: "{{ target }}"
   gather_facts: false
+  vars_files:
+    - "{{ var_file }}"
   roles:
     - cosmos_node_dependencies
     - cosmos_seed

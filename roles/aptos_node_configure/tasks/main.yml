@@ -1,0 +1,83 @@
+---
+- name: Check if node has been initialized
+  ansible.builtin.stat:
+    path: "{{ user_dir }}/{{ folder }}"
+  register: node_initialized
+
+- name: Initialize node
+  when: not node_initialized.stat.exists
+  block:
+    - name: Create chain folder if it does not exist
+      ansible.builtin.file:
+        path: "{{ user_dir }}/{{ folder }}"
+        state: directory
+        mode: "0755"
+
+    - name: Pull waypoint.txt
+      ansible.builtin.get_url:
+        url: "{{ waypoint }}"
+        dest: "{{ user_dir }}/{{ folder }}/waypoint.txt"
+        mode: "0644"
+
+    - name: Pull genesis.blob
+      ansible.builtin.get_url:
+        url: "{{ genesis_blob }}"
+        dest: "{{ user_dir }}/{{ folder }}/genesis.blob"
+        mode: "0644"
+
+    - name: Copy appropriate config file
+      ansible.builtin.template:
+        src: "{{ aptos_role }}.j2"
+        dest: "{{ user_dir }}/{{ folder }}/{{ aptos_role }}.yaml"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0600"
+
+    - name: Create keys directory
+      ansible.builtin.file:
+        path: "{{ user_dir }}/{{ folder }}/keys"
+        state: directory
+        mode: "0755"
+      when: (aptos_role == "validator") or (aptos_role == "vfn")
+
+    - name: Copy VFN identity file
+      ansible.builtin.copy:
+        src: "{{ group_names[0] }}/validator-full-node-identity.yaml"
+        dest: "{{ user_dir }}/{{ folder }}/keys/validator-full-node-identity.yaml"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0600"
+      when: aptos_role == "vfn"
+
+    - name: Copy Validator identity file
+      ansible.builtin.copy:
+        src: "{{ group_names[0] }}/validator-identity.yaml"
+        dest: "{{ user_dir }}/{{ folder }}/keys/validator-identity.yaml"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0600"
+      when: aptos_role == "validator"
+
+- name: Open p2p port for validator or pfn
+  become: true
+  community.general.ufw:
+    rule: allow
+    proto: tcp
+    port: "{{ p2p_port }}"
+  when: (aptos_role == "validator") or (aptos_role == "pfn")
+
+- name: Open p2p port for vfn
+  become: true
+  community.general.ufw:
+    rule: allow
+    proto: tcp
+    port: "{{ p2p_port_vfn }}"
+  when: aptos_role == "vfn"
+
+- name: Open api port
+  become: true
+  community.general.ufw:
+    rule: allow
+    proto: tcp
+    port: "{{ api_port }}"
+  when: (aptos_role == "vfn") or (aptos_role == "pfn")
